@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/listen/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <title>Listen</title>
+</head>
+
+<body>
+    <div id="mainBox" class="mainBox">
+        <div id="blackBox" class="blackBox"></div>
+        <div id="dataBox" class="dataBox">
+            <table id="table">
+                <tr>
+                    <th>Model</th>
+                    <th>Neutral</th>
+                    <th>Happy</th>
+                    <th>Sad</th>
+                    <th>Angry</th>
+                    <th>Fear</th>
+                    <th>Suprised</th>
+                    <th>Disgusted</th>
+                    <th>X-Coord</th>
+                    <th>Y-Coord</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="buttons" class="buttons">
+        <button id="button1" class="buttons first">Adını hatırlamadığım 1. button</button>
+        <button id="button2" class="buttons second">Adını hatırlamadığım 2.button</button>
+    </div>
+</body>
+<script src="/listen/index.js"></script>
+
+</html>
