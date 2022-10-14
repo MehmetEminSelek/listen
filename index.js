@@ -3,14 +3,22 @@ var button2 = document.getElementById('button2');
 var mainBox = document.getElementById('mainBox');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
-var table = document.getElementById('table');
-var blackBox = document.getElementById('blackBox');
+var raftable = document.getElementById('rafvalues');
+var affecttable = document.getElementById('affectvalues');
+var subjectName = document.getElementById('subjectName');
+var experimentNo = document.getElementById('experimentNo');
 var base_url = "http://localhost:3000";
 var local_url = "http://192.168.1.106:3000";
 var stompClient = null;
 var firstTime = true
 
 connect();
+
+$(document).ready(function () {
+    $('#rafTable').DataTable();
+    $('#affectTable').DataTable();
+    $('#grazerTable').DataTable();
+});
 
 function connect() {
     var socket = new SockJS(base_url + '/prediction');
@@ -24,65 +32,27 @@ function connect() {
 
 function handleReceivedValue(message) {
     if (firstTime) {
-        var subjectName = document.createElement('p').appendChild(document.createTextNode("Test Subject Name: " + message.sender));
-        var experimentCount = document.createElement('p').appendChild(document.createTextNode("Experiment No: " + message.experimentCount));
-        blackBox.appendChild(subjectName);
-        blackBox.appendChild(experimentCount);
+        subjectName.innerText = "Test Subject Name: " + message.sender;
+        experimentNo.innerText = "Experiment No: " + message.experimentCount;
         firstTime = false;
     }
 
-    var row = document.createElement('tr');
+    var data = [message.id, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust]
+    var grazerData = [message.id, message.xcord, message.ycord]
 
-    var modelCell = document.createElement('td');
-    var modelText = document.createTextNode(message.model);
-    modelCell.appendChild(modelText);
+    if (message.model == "Raf") {
+        $('#rafTable').DataTable().row.add(data).draw();
+    } else if (message.model == "Affectnet") {
+        $('#affectTable').DataTable().row.add(data).draw();
+    }
 
-    var neutralCell = document.createElement('td');
-    var neutralText = document.createTextNode(message.neutral);
-    neutralCell.appendChild(neutralText);
+    if ($('#grazerTable').DataTable().data().length == 0) {
+        $('#grazerTable').DataTable().row.add(grazerData).draw();
+    }
 
-    var happyCell = document.createElement('td');
-    var happyText = document.createTextNode(message.happy);
-    happyCell.appendChild(happyText);
-
-    var sadCell = document.createElement('td');
-    var sadText = document.createTextNode(message.sad);
-    sadCell.appendChild(sadText);
-
-    var angryCell = document.createElement('td');
-    var angryText = document.createTextNode(message.angry);
-    angryCell.appendChild(angryText);
-
-    var fearCell = document.createElement('td');
-    var fearText = document.createTextNode(message.fear);
-    fearCell.appendChild(fearText);
-
-    var disgustCell = document.createElement('td');
-    var disgustText = document.createTextNode(message.disgust);
-    disgustCell.appendChild(disgustText);
-
-    var surpriseCell = document.createElement('td');
-    var surpriseText = document.createTextNode(message.surprise);
-    surpriseCell.appendChild(surpriseText);
-
-    var xcell = document.createElement('td');
-    var xText = document.createTextNode(message.xcord);
-    xcell.appendChild(xText);
-
-    var ycell = document.createElement('td');
-    var yText = document.createTextNode(message.ycord);
-    ycell.appendChild(yText);
-
-    row.appendChild(modelCell);
-    row.appendChild(neutralCell);
-    row.appendChild(happyCell);
-    row.appendChild(sadCell);
-    row.appendChild(angryCell);
-    row.appendChild(fearCell);
-    row.appendChild(disgustCell);
-    row.appendChild(surpriseCell);
-    row.appendChild(xcell);
-    row.appendChild(ycell);
-
-    table.appendChild(row);
+    if ($('#grazerTable').DataTable().data().length >= 1) {
+        if ($('#grazerTable').DataTable().data()[$('#grazerTable').DataTable().data().length - 1][0] != grazerData[0]) {
+            $('#grazerTable').DataTable().row.add(grazerData).draw();
+        }
+    }
 }
