@@ -13,7 +13,7 @@ var firstTime = true
 connect();
 
 function connect() {
-    var socket = new SockJS(local_url + '/prediction');
+    var socket = new SockJS(base_url + '/prediction');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/prediction-listen', function (message) {
@@ -23,8 +23,6 @@ function connect() {
 }
 
 function handleReceivedValue(message) {
-    debugger;
-
     if (firstTime) {
         var subjectName = document.createElement('p').appendChild(document.createTextNode("Test Subject Name: " + message.sender));
         var experimentCount = document.createElement('p').appendChild(document.createTextNode("Experiment No: " + message.experimentCount));
