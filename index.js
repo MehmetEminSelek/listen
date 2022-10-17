@@ -7,10 +7,15 @@ var raftable = document.getElementById('rafvalues');
 var affecttable = document.getElementById('affectvalues');
 var subjectName = document.getElementById('subjectName');
 var experimentNo = document.getElementById('experimentNo');
+const httpMethodPost = 'POST';
+const postHeaders = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+};
 var base_url = "http://localhost:3000";
-var local_url = "http://192.168.1.106:3000";
 var stompClient = null;
 var firstTime = true
+var dbDatas = [];
 
 connect();
 
@@ -38,6 +43,7 @@ function handleReceivedValue(message) {
     }
 
     var data = [message.id, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust]
+
     var grazerData = [message.id, message.xcord, message.ycord]
 
     if (message.model == "Raf") {
@@ -55,4 +61,52 @@ function handleReceivedValue(message) {
             $('#grazerTable').DataTable().row.add(grazerData).draw();
         }
     }
+
+    var dbData = {
+        "id": message.id,
+        "sender": message.sender,
+        "experimentCount": message.experimentCount,
+        "model": message.model,
+        "neutral": message.neutral,
+        "happy": message.happy,
+        "sad": message.sad,
+        "angry": message.angry,
+        "fear": message.fear,
+        "surprise": message.surprise,
+        "disgust": message.disgust,
+        "xcord": message.xcord,
+        "ycord": message.ycord,
+    }
+
+    dbDatas.push(dbData);
+}
+
+async function sendToServer() {
+    if (dbDatas.length != 0) {
+        document.getElementById('loading').style.display = "inline-block";
+        await fetch(base_url + '/save', {
+            method: httpMethodPost,
+            headers: postHeaders,
+            body: JSON.stringify(dbDatas)
+        }).catch(err => console.log(err))
+            .finally(() => {
+                document.getElementById('loading').style.display = "none";
+            });
+    }
+}
+
+function download() {
+    var CsvString = "TEST_SUBJECT_NAME,EXPERIMENT_NO,DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SUPRISE,DISGUST,X_CORD,Y_CORD" + "\r\n";
+    dbDatas.forEach(function (RowItem, RowIndex) {
+        CsvString = CsvString + RowItem.neutral + ',' + RowItem.happy + ','
+            + RowItem.sad + ',' + RowItem.angry + ','
+            + RowItem.fear + ',' + RowItem.suprise + ','
+            + RowItem.disgust + "\r\n";
+    });
+    CsvString = "data:application/csv," + encodeURIComponent(CsvString);
+    var x = document.createElement("A");
+    x.setAttribute("href", CsvString);
+    x.setAttribute("download", dbDatas[0].sender + " RESULTS.csv");
+    document.body.appendChild(x);
+    x.click();
 }
