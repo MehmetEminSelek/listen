@@ -12,7 +12,7 @@ const postHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
-var base_url = "http://localhost:3000";
+var base_url = "http://64.225.94.117:8000";
 var stompClient = null;
 var firstTime = true
 var dbDatas = [];
