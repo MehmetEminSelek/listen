@@ -1,6 +1,7 @@
 var button1 = document.getElementById('button1');
 var button2 = document.getElementById('button2');
 var mainBox = document.getElementById('mainBox');
+var blackBox = document.getElementById('blackBox');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
 var raftable = document.getElementById('rafvalues');
@@ -16,6 +17,7 @@ var base_url = "http://64.225.94.117:8000";
 var stompClient = null;
 var firstTime = true
 var dbDatas = [];
+var trace = [];
 
 connect();
 
@@ -31,8 +33,21 @@ function connect() {
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/prediction-listen', function (message) {
             handleReceivedValue(JSON.parse(message.body))
+            handleEngineStart(JSON.parse(message.body))
         });
     });
+}
+
+function handleEngineStart(message) {
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe('/engine-engine', function (message) {
+            handleReceivedValue(JSON.parse(message.body))
+        });
+    });
+    if (message.message == "stop" && message.sender == "engine") {
+        download();
+
+    }
 }
 
 function handleReceivedValue(message) {
@@ -77,7 +92,7 @@ function handleReceivedValue(message) {
         "xcord": message.xcord,
         "ycord": message.ycord,
     }
-
+    drawGazer(message.xcord, message.ycord);
     dbDatas.push(dbData);
 }
 
@@ -109,4 +124,34 @@ function download() {
     x.setAttribute("download", dbDatas[0].sender + " RESULTS.csv");
     document.body.appendChild(x);
     x.click();
+}
+
+function drawGazer(xcord, ycord) {
+    var offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.style.position = "absolute";
+    var offscreenC = offscreenCanvas.getContext('2d');
+    blackBox.appendChild(offscreenCanvas);
+
+    offscreenCanvas.width = blackBox.clientWidth;
+    offscreenCanvas.height = blackBox.clientHeight;
+
+    // in animate function, draw points onto the offscreen canvas instead
+    // of the regular canvas as they are added
+    if (trace.includes([xcord, ycord]) != true) {
+        trace.push([xcord, ycord]);
+        var i = trace.length - 1;
+
+        if (i > 1) {
+            offscreenC.strokeStyle = 'red';
+            offscreenC.beginPath();
+            offscreenC.arc(xcord, ycord, 2, 0, 2 * Math.PI);
+            offscreenC.moveTo(trace[i][0], trace[i][1])
+            offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
+            offscreenC.stroke();
+        }
+    }
+
+    offscreenC.drawImage(offscreenCanvas, 0, 0);
+
+
 }
