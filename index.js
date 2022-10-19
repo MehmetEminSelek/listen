@@ -33,22 +33,10 @@ function connect() {
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/prediction-listen', function (message) {
             handleReceivedValue(JSON.parse(message.body))
-            handleEngineStart(JSON.parse(message.body))
         });
     });
 }
 
-function handleEngineStart(message) {
-    stompClient.connect({}, function (frame) {
-        stompClient.subscribe('/engine-engine', function (message) {
-            handleReceivedValue(JSON.parse(message.body))
-        });
-    });
-    if (message.message == "stop" && message.sender == "engine") {
-        download();
-
-    }
-}
 
 function handleReceivedValue(message) {
     if (firstTime) {
@@ -148,6 +136,9 @@ function drawGazer(xcord, ycord) {
             offscreenC.moveTo(trace[i][0], trace[i][1])
             offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
             offscreenC.stroke();
+        }
+        else if (i % 150 == 0) {
+            offscreenC.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
         }
     }
 
