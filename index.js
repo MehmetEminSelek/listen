@@ -37,7 +37,7 @@ function handleReceivedValue(message) {
         firstTime = false;
     }
 
-    var data = [message.id, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust]
+    var data = [message.id, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust, message.status]
     var grazerData = [message.id, message.xcord, message.ycord]
 
     if (message.model == "Raf") {
