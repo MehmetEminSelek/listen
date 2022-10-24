@@ -34,7 +34,16 @@ function connect() {
         stompClient.subscribe('/prediction-listen', function (message) {
             handleReceivedValue(JSON.parse(message.body))
         });
+        stompClient.subscribe('/engine-listen', function (message) {
+            handleAutoSave(JSON.parse(message.body))
+        });
     });
+}
+
+function handleAutoSave(message) {
+    if (message.sender == "engine" && message.message == "stop") {
+        sendToServer();
+    }
 }
 
 
