@@ -41,7 +41,7 @@ function connect() {
 }
 
 function handleAutoSave(message) {
-    if (message.sender == "engine" && message.message == "stop") {
+    if (message.sender == "engine" && message.message == "save") {
         sendToServer();
     }
 }
