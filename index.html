@@ -27,6 +27,9 @@
 </head>
 
 <body>
+    <div id="loading">
+        <div class="lds-dual-ring"></div>
+    </div>
     <div class="row">
         <div class="col">
             <h2>Raf Model Results</h2>
@@ -84,6 +87,8 @@
             <p class="headerSpec" id="experimentNo">
             </p>
             <div id="blackBox"></div>
+            <div class="button download" onclick="sendToServer()">Save Results</div>
+            <div class="button csv" onclick="download()">Download Results as Excel File</div>
         </div>
     </div>
 </body>

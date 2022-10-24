@@ -1,16 +1,23 @@
 var button1 = document.getElementById('button1');
 var button2 = document.getElementById('button2');
 var mainBox = document.getElementById('mainBox');
+var blackBox = document.getElementById('blackBox');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
 var raftable = document.getElementById('rafvalues');
 var affecttable = document.getElementById('affectvalues');
 var subjectName = document.getElementById('subjectName');
 var experimentNo = document.getElementById('experimentNo');
-var base_url = "http://localhost:3000";
-var local_url = "http://192.168.1.106:3000";
+const httpMethodPost = 'POST';
+const postHeaders = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+};
+var base_url = "http://64.225.94.117:8000";
 var stompClient = null;
 var firstTime = true
+var dbDatas = [];
+var trace = [];
 
 connect();
 
@@ -21,7 +28,7 @@ $(document).ready(function () {
 });
 
 function connect() {
-    var socket = new SockJS(local_url + '/prediction');
+    var socket = new SockJS(base_url + '/prediction');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/prediction-listen', function (message) {
@@ -29,6 +36,7 @@ function connect() {
         });
     });
 }
+
 
 function handleReceivedValue(message) {
     if (firstTime) {
@@ -55,4 +63,85 @@ function handleReceivedValue(message) {
             $('#grazerTable').DataTable().row.add(grazerData).draw();
         }
     }
+
+    var dbData = {
+        "id": message.id,
+        "sender": message.sender,
+        "experimentCount": message.experimentCount,
+        "model": message.model,
+        "neutral": message.neutral,
+        "happy": message.happy,
+        "sad": message.sad,
+        "angry": message.angry,
+        "fear": message.fear,
+        "surprise": message.surprise,
+        "disgust": message.disgust,
+        "xcord": message.xcord,
+        "ycord": message.ycord,
+    }
+    drawGazer(message.xcord, message.ycord);
+    dbDatas.push(dbData);
+}
+
+async function sendToServer() {
+    if (dbDatas.length != 0) {
+        document.getElementById('loading').style.display = "inline-block";
+        await fetch(base_url + '/save', {
+            method: httpMethodPost,
+            headers: postHeaders,
+            body: JSON.stringify(dbDatas)
+        }).catch(err => console.log(err))
+            .finally(() => {
+                document.getElementById('loading').style.display = "none";
+            });
+    }
+}
+
+function download() {
+    var CsvString = "TEST_SUBJECT_NAME,EXPERIMENT_NO,DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SUPRISE,DISGUST,X_CORD,Y_CORD" + "\r\n";
+    dbDatas.forEach(function (RowItem, RowIndex) {
+        CsvString = CsvString + RowItem.neutral + ',' + RowItem.happy + ','
+            + RowItem.sad + ',' + RowItem.angry + ','
+            + RowItem.fear + ',' + RowItem.suprise + ','
+            + RowItem.disgust + "\r\n";
+    });
+    CsvString = "data:application/csv," + encodeURIComponent(CsvString);
+    var x = document.createElement("A");
+    x.setAttribute("href", CsvString);
+    x.setAttribute("download", dbDatas[0].sender + " RESULTS.csv");
+    document.body.appendChild(x);
+    x.click();
+}
+
+function drawGazer(xcord, ycord) {
+    var offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.style.position = "absolute";
+    var offscreenC = offscreenCanvas.getContext('2d');
+    blackBox.appendChild(offscreenCanvas);
+
+    offscreenCanvas.width = blackBox.clientWidth;
+    offscreenCanvas.height = blackBox.clientHeight;
+
+    // in animate function, draw points onto the offscreen canvas instead
+    // of the regular canvas as they are added
+    if (trace.includes([xcord, ycord]) != true) {
+        trace.push([xcord, ycord]);
+        var i = trace.length - 1;
+
+        if (i > 1) {
+            offscreenC.strokeStyle = 'red';
+            offscreenC.beginPath();
+            offscreenC.arc(xcord, ycord, 2, 0, 2 * Math.PI);
+            offscreenC.moveTo(trace[i][0], trace[i][1])
+            offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
+            offscreenC.stroke();
+        }
+        else if (i % 150 == 0) {
+            offscreenC.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+        }
+    }
+
+    offscreenC.drawImage(offscreenCanvas, 0, 0);
+
+
 }
