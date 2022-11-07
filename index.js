@@ -13,7 +13,7 @@ const postHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
-const base_url = "http://64.225.94.117:8000";
+const base_url = "http://wafer-experiment.com";
 // const base_url = "http://192.168.1.107:8000";
 var stompClient = null;
 var firstTime = true
@@ -135,6 +135,8 @@ function drawGazer(xcord, ycord) {
     // in animate function, draw points onto the offscreen canvas instead
     // of the regular canvas as they are added
     if (trace.includes([xcord, ycord]) != true) {
+        xcord = xcord * (1920/blackBox.clientWidth);
+        ycord = ycord * (1080/blackBox.clientHeight);
         trace.push([xcord, ycord]);
         var i = trace.length - 1;
 
