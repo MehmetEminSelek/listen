@@ -13,8 +13,13 @@ const postHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
+<<<<<<< HEAD
 const base_url = "http://164.92.205.27:8000";
 // const base_url = "http://192.168.1.107:8000";
+=======
+const base_url = "http://134.122.68.223:8000";
+//const base_url = "https://127.0.0.1:8000";
+>>>>>>> 01cf5ce81849d2d331b8e3bf5185a32bfbfa1177
 var stompClient = null;
 var firstTime = true
 var dbDatas = [];
@@ -135,6 +140,8 @@ function drawGazer(xcord, ycord) {
     // in animate function, draw points onto the offscreen canvas instead
     // of the regular canvas as they are added
     if (trace.includes([xcord, ycord]) != true) {
+        xcord = xcord * (1920/blackBox.clientWidth);
+        ycord = ycord * (1080/blackBox.clientHeight);
         trace.push([xcord, ycord]);
         var i = trace.length - 1;
 
