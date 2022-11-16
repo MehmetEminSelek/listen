@@ -13,7 +13,7 @@ const postHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
-const base_url = "http://164.92.205.27:8000";
+const base_url = "https://wafer-backend.com:443";
 // const base_url = "http://192.168.1.107:8000";
 var stompClient = null;
 var firstTime = true
@@ -46,6 +46,7 @@ function handleAutoSave(message) {
         sendToServer();
     }
 }
+
 
 
 function handleReceivedValue(message) {
@@ -106,16 +107,19 @@ async function sendToServer() {
             });
     }
 }
+//GDBB1901N
 
 function download() {
-    var CsvString = "TEST_SUBJECT_NAME,EXPERIMENT_NO,DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SUPRISE,DISGUST,X_CORD,Y_CORD" + "\r\n";
+
+    var CsvString = "TEST_SUBJECT_NAME" + "," +"EXPERIMENT_NO" + "DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SURPRISE,DISGUST,X_CORD,Y_CORD" + "\r \n";
     dbDatas.forEach(function (RowItem, RowIndex) {
-        CsvString = CsvString + RowItem.neutral + ',' + RowItem.happy + ','
+        CsvString = CsvString + "\r" + RowItem.sender +","+ RowItem.model +","  + RowItem.neutral + ',' + RowItem.happy + ','
             + RowItem.sad + ',' + RowItem.angry + ','
-            + RowItem.fear + ',' + RowItem.suprise + ','
-            + RowItem.disgust + "\r\n";
+            + RowItem.fear + ',' + RowItem.surprise + ','
+            + RowItem.disgust + "," +  RowItem.xcord +" ," +RowItem.ycord  + "\r \n";
     });
-    CsvString = "data:application/csv," + encodeURIComponent(CsvString);
+
+    CsvString = "data:application/csv" + encodeURIComponent(CsvString);
     var x = document.createElement("A");
     x.setAttribute("href", CsvString);
     x.setAttribute("download", dbDatas[0].sender + " RESULTS.csv");
@@ -134,9 +138,10 @@ function drawGazer(xcord, ycord) {
 
     // in animate function, draw points onto the offscreen canvas instead
     // of the regular canvas as they are added
+    var constant = (1920)
     if (trace.includes([xcord, ycord]) != true) {
-        xcord = xcord * (1920 / blackBox.clientWidth);
-        ycord = ycord * (1080 / blackBox.clientHeight);
+        xcord = xcord / 1.95; 
+        ycord = ycord / 1.95;
         trace.push([xcord, ycord]);
         var i = trace.length - 1;
 
@@ -148,7 +153,8 @@ function drawGazer(xcord, ycord) {
             offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
             offscreenC.stroke();
         }
-        else if (i % 150 == 0) {
+
+        else if (i % 50 == 0) {
             offscreenC.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
         }
     }
