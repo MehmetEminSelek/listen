@@ -94,6 +94,9 @@ function handleReceivedValue(message) {
     dbDatas.push(dbData);
 }
 
+
+//test
+
 async function sendToServer() {
     if (dbDatas.length != 0) {
         document.getElementById('loading').style.display = "inline-block";
