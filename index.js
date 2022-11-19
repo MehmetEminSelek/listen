@@ -10,7 +10,7 @@ var subjectName = document.getElementById('subjectName');
 var experimentNo = document.getElementById('experimentNo');
 const httpMethodPost = 'POST';
 const postHeaders = {
-    'Accept': 'application/json',
+    'Accept': '*/*',
     'Content-Type': 'application/json'
 };
 const base_url = "https://wafer-backend.com:443";
@@ -89,7 +89,7 @@ function handleReceivedValue(message) {
         "disgust": message.disgust,
         "xcord": message.xcord,
         "ycord": message.ycord,
-    }
+    };
     drawGazer(message.xcord, message.ycord);
     dbDatas.push(dbData);
 }
