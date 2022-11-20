@@ -14,7 +14,7 @@ const postHeaders = {
     'Content-Type': 'application/json'
 };
 const base_url = "https://wafer-backend.com:443";
-// const base_url = "http://192.168.1.107:8000";
+//const base_url = "http://localhost:443";
 var stompClient = null;
 var firstTime = true
 var dbDatas = [];
@@ -89,6 +89,7 @@ function handleReceivedValue(message) {
         "disgust": message.disgust,
         "xcord": message.xcord,
         "ycord": message.ycord,
+        "status" : message.status
     };
     drawGazer(message.xcord, message.ycord);
     dbDatas.push(dbData);
