@@ -56,7 +56,7 @@ function handleReceivedValue(message) {
         firstTime = false;
     }
 
-    var data = [message.id, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust, message.status]
+    var data = [message.id, message.timeStamp, message.neutral, message.happy, message.sad, message.angry, message.fear, message.surprise, message.disgust, message.status]
     var grazerData = [message.id, message.xcord, message.ycord]
 
     if (message.model == "Raf") {
@@ -89,7 +89,8 @@ function handleReceivedValue(message) {
         "disgust": message.disgust,
         "xcord": message.xcord,
         "ycord": message.ycord,
-        "status" : message.status
+        "time": message.timeStamp,
+        "status": message.status
     };
     drawGazer(message.xcord, message.ycord);
     dbDatas.push(dbData);
@@ -115,12 +116,12 @@ async function sendToServer() {
 
 function download() {
 
-    var CsvString = "TEST_SUBJECT_NAME" + ";" +"EXPERIMENT_NO" + "DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SURPRISE,DISGUST,X_CORD,Y_CORD" + "\r \n";
+    var CsvString = "TEST_SUBJECT_NAME" + ";" + "EXPERIMENT_NO" + "DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SURPRISE,DISGUST,X_CORD,Y_CORD" + "\r \n";
     dbDatas.forEach(function (RowItem, RowIndex) {
-        CsvString = CsvString + "\r" + RowItem.sender +";"+ RowItem.model +";"  + RowItem.neutral + ";" + RowItem.happy + ";"
+        CsvString = CsvString + "\r" + RowItem.sender + ";" + RowItem.model + ";" + RowItem.neutral + ";" + RowItem.happy + ";"
             + RowItem.sad + ";" + RowItem.angry + ";"
             + RowItem.fear + ";" + RowItem.surprise + ";"
-            + RowItem.disgust + ";" +  RowItem.xcord +" ," +RowItem.ycord ;
+            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord;
     });
 
     CsvString = "data:application/csv" + encodeURIComponent(CsvString);
@@ -144,7 +145,7 @@ function drawGazer(xcord, ycord) {
     // of the regular canvas as they are added
     var constant = (1920)
     if (trace.includes([xcord, ycord]) != true) {
-        xcord = xcord / 1.95; 
+        xcord = xcord / 1.95;
         ycord = ycord / 1.95;
         trace.push([xcord, ycord]);
         var i = trace.length - 1;
