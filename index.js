@@ -89,7 +89,7 @@ function handleReceivedValue(message) {
         "disgust": message.disgust,
         "xcord": message.xcord,
         "ycord": message.ycord,
-        "time": message.timeStamp,
+        "timeStamp": message.timeStamp,
         "status": message.status
     };
     drawGazer(message.xcord, message.ycord);
