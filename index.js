@@ -116,20 +116,21 @@ async function sendToServer() {
 
 function download() {
 
-    var CsvString = "TEST_SUBJECT_NAME" + ";" + "EXPERIMENT_NO" + "DESCRIPTIONS,NEUTRAL,HAPPY,SAD,ANGRY,FEAR,SURPRISE,DISGUST,X_CORD,Y_CORD" + "\r \n";
+    var CsvString = "TEST_SUBJECT_NAME" + ";" + "EXPERIMENT_NO" + "DESCRIPTIONS;NEUTRAL;HAPPY;SAD;ANGRY;FEAR;SURPRISE;DISGUST;X_CORD;Y_CORD;STATUS" + "\r \n";
     dbDatas.forEach(function (RowItem, RowIndex) {
         CsvString = CsvString + "\r" + RowItem.sender + ";" + RowItem.model + ";" + RowItem.neutral + ";" + RowItem.happy + ";"
             + RowItem.sad + ";" + RowItem.angry + ";"
             + RowItem.fear + ";" + RowItem.surprise + ";"
-            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord;
+            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord, RowItem.status + "\r \n";
     });
+    //download with TEST_SUBJECT_NAME and EXPERIMENT_NO
+    var a = document.createElement('a');
+    var url = window.URL.createObjectURL(new Blob([CsvString], { type: 'text/csv' }));
+    a.href = url;
+    a.download = subjectName.innerText + "_" + ".csv";
+    document.body.appendChild(a);
+    a.click();
 
-    CsvString = "data:application/csv" + encodeURIComponent(CsvString);
-    var x = document.createElement("A");
-    x.setAttribute("href", CsvString);
-    x.setAttribute("download", dbDatas[0].sender + " RESULTS.csv");
-    document.body.appendChild(x);
-    x.click();
 }
 
 function drawGazer(xcord, ycord) {
