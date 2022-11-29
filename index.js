@@ -121,7 +121,7 @@ function download() {
         CsvString = CsvString + "\r" + RowItem.sender + ";" + RowItem.model + ";" + RowItem.neutral + ";" + RowItem.happy + ";"
             + RowItem.sad + ";" + RowItem.angry + ";"
             + RowItem.fear + ";" + RowItem.surprise + ";"
-            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord, RowItem.status + "\r \n";
+            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord, "," + RowItem.status + "\r \n";
     });
     //download with TEST_SUBJECT_NAME and EXPERIMENT_NO
     var a = document.createElement('a');
