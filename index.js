@@ -92,7 +92,7 @@ function handleReceivedValue(message) {
         "timeStamp": message.timeStamp,
         "status": message.status
     };
-    drawGazer(message.xcord, message.ycord);
+    // drawGazer(message.xcord, message.ycord);
     dbDatas.push(dbData);
 }
 
@@ -121,7 +121,7 @@ function download() {
         CsvString = CsvString + "\r" + RowItem.sender + ";" + RowItem.model + ";" + RowItem.neutral + ";" + RowItem.happy + ";"
             + RowItem.sad + ";" + RowItem.angry + ";"
             + RowItem.fear + ";" + RowItem.surprise + ";"
-            + RowItem.disgust + ";" + RowItem.xcord + " ," + RowItem.ycord, "," + RowItem.status + "\r \n";
+            + RowItem.disgust + ";" + RowItem.xcord + " ;" + RowItem.ycord, ";" + RowItem.status + "\r \n";
     });
     //download with TEST_SUBJECT_NAME and EXPERIMENT_NO
     var a = document.createElement('a');
@@ -133,39 +133,39 @@ function download() {
 
 }
 
-function drawGazer(xcord, ycord) {
-    var offscreenCanvas = document.createElement('canvas');
-    offscreenCanvas.style.position = "absolute";
-    var offscreenC = offscreenCanvas.getContext('2d');
-    blackBox.appendChild(offscreenCanvas);
+// function drawGazer(xcord, ycord) {
+//     var offscreenCanvas = document.createElement('canvas');
+//     offscreenCanvas.style.position = "absolute";
+//     var offscreenC = offscreenCanvas.getContext('2d');
+//     blackBox.appendChild(offscreenCanvas);
 
-    offscreenCanvas.width = blackBox.clientWidth;
-    offscreenCanvas.height = blackBox.clientHeight;
+//     offscreenCanvas.width = blackBox.clientWidth;
+//     offscreenCanvas.height = blackBox.clientHeight;
 
-    // in animate function, draw points onto the offscreen canvas instead
-    // of the regular canvas as they are added
-    var constant = (1920)
-    if (trace.includes([xcord, ycord]) != true) {
-        xcord = xcord / 1.95;
-        ycord = ycord / 1.95;
-        trace.push([xcord, ycord]);
-        var i = trace.length - 1;
+//     // in animate function, draw points onto the offscreen canvas instead
+//     // of the regular canvas as they are added
+//     var constant = (1920)
+//     if (trace.includes([xcord, ycord]) != true) {
+//         xcord = xcord / 1.95;
+//         ycord = ycord / 1.95;
+//         trace.push([xcord, ycord]);
+//         var i = trace.length - 1;
 
-        if (i > 1) {
-            offscreenC.strokeStyle = 'red';
-            offscreenC.beginPath();
-            offscreenC.arc(xcord, ycord, 2, 0, 2 * Math.PI);
-            offscreenC.moveTo(trace[i][0], trace[i][1])
-            offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
-            offscreenC.stroke();
-        }
+//         if (i > 1) {
+//             offscreenC.strokeStyle = 'red';
+//             offscreenC.beginPath();
+//             offscreenC.arc(xcord, ycord, 2, 0, 2 * Math.PI);
+//             offscreenC.moveTo(trace[i][0], trace[i][1])
+//             offscreenC.lineTo(trace[i - 1][0], trace[i - 1][1])
+//             offscreenC.stroke();
+//         }
 
-        else if (i % 50 == 0) {
-            offscreenC.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-        }
-    }
+//         else if (i % 50 == 0) {
+//             offscreenC.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+//         }
+//     }
 
-    offscreenC.drawImage(offscreenCanvas, 0, 0);
+//     offscreenC.drawImage(offscreenCanvas, 0, 0);
 
 
-}
+// }
