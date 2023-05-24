@@ -20,6 +20,7 @@ var firstTime = true
 var dbDatas = [];
 var trace = [];
 
+
 connect();
 
 $(document).ready(function () {
@@ -47,9 +48,13 @@ function handleAutoSave(message) {
     }
 }
 
-
+var timedResults = []
 
 function handleReceivedValue(message) {
+
+    const timer = new Date();
+    console.log("Results has landed" + " " + timer.toLocaleTimeString() + ": " + timer.getMilliseconds());
+    timedResults.push("Results has landed" + " " + timer.toLocaleTimeString() + ": " + timer.getMilliseconds());
     if (firstTime) {
         subjectName.innerText = "Test Subject Name: " + message.sender;
         experimentNo.innerText = "Experiment No: " + message.experimentCount;
